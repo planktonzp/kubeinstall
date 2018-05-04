@@ -1,0 +1,41 @@
+{
+  "dockerCMDList": [
+    {
+      "cmdContent": "sudo docker load --input $(DOCKER_IMAGES_PATH)/busybox.tar",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sudo docker tag  gcr.io/google_containers/busybox:latest $(DOCKER_REGISTRY_URL)/busybox:latest"
+    },
+    {
+      "cmdContent": "sudo docker push $(DOCKER_REGISTRY_URL)/busybox:latest"
+    }
+  ],
+  "yamlCMDList": [
+    {
+      "cmdContent": "echo 'test dns-monitor yaml cmd'",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ],
+  "createCMDList": [
+    {
+      "cmdContent": "echo 'test dns-monitor create cmd'",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ]
+}

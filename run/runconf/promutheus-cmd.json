@@ -1,0 +1,299 @@
+{
+  "dockerCMDList": [
+    {
+      "cmdContent": "cp $(DOCKER_IMAGES_PATH)/prometheus/prometheus-src.yaml $(DOCKER_IMAGES_PATH)/prometheus/prometheus.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sed -i \"s/\\$(APISERVER_URL_KEY)/$(APISERVER_URL_VALUE)/g\" $(DOCKER_IMAGES_PATH)/prometheus/prometheus.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent":"cd $(DOCKER_IMAGES_PATH) && docker load -i prometheus-centos-base.tar"
+    },
+    {
+      "cmdContent": "cd $(DOCKER_IMAGES_PATH)/prometheus/ &&  docker build -t $(DOCKER_REGISTRY_URL)/prometheus:v20180103 .",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker push $(DOCKER_REGISTRY_URL)/prometheus:v20180103",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+	{
+      "cmdContent": "cp $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager-src.yaml $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sed -i \"s/\\$(SMTP_FROM)/$(SMTP_FROM_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+    {
+      "cmdContent": "sed -i \"s/\\$(SMTP_SMARTHOST)/$(SMTP_SMARTHOST_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(SMTP_AUTH_USERNAME)/$(SMTP_AUTH_USERNAME_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(SMTP_AUTH_PASSWORD)/$(SMTP_AUTH_PASSWORD_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(DEFAULT_RECEIVER)/$(DEFAULT_RECEIVER_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(DEFAULT_EMAIL_TO)/$(DEFAULT_EMAIL_TO_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(DEFAULT_EMAIL_FROM)/$(DEFAULT_EMAIL_FROM_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(DEFAULT_SMARTHOST)/$(DEFAULT_SMARTHOST_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(DEFAULT_AUTH_USERNAME)/$(DEFAULT_AUTH_USERNAME_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+	{
+      "cmdContent": "sed -i \"s/\\$(DEFAULT_AUTH_PASSWORD)/$(DEFAULT_AUTH_PASSWORD_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager/alertmanager.yaml"
+    },
+    {
+      "cmdContent": "cd $(DOCKER_IMAGES_PATH)/alertmanager/ && docker build -t $(DOCKER_REGISTRY_URL)/alertmanager:v20180103 .",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker push $(DOCKER_REGISTRY_URL)/alertmanager:v20180103",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker load --input $(DOCKER_IMAGES_PATH)/kube-state.tar",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker tag gcr.io/google_containers/kube-state:m1 $(DOCKER_REGISTRY_URL)/kube-state:m1",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker push $(DOCKER_REGISTRY_URL)/kube-state:m1",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker load --input $(DOCKER_IMAGES_PATH)/node-exporter.tar",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker tag gcr.io/google_containers/node-exporter:m1 $(DOCKER_REGISTRY_URL)/node-exporter:m1",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "docker push $(DOCKER_REGISTRY_URL)/node-exporter:m1",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ],
+  "yamlCMDList": [
+    {
+      "cmdContent": "cp $(DOCKER_IMAGES_PATH)/prometheus-deployment-src.yml $(DOCKER_IMAGES_PATH)/prometheus-deployment.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sed -i \"s/\\$(CEPH_MONS)/$(CEPH_MONS_VALUE)/g\" $(DOCKER_IMAGES_PATH)/prometheus-deployment.yaml"
+    },
+    {
+      "cmdContent": "sed -i \"s/gcr.io\\/google_containers/$(DOCKER_REGISTRY_URL)/g\" $(DOCKER_IMAGES_PATH)/prometheus-deployment.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sed -i \"s/gcr.io\\/google_containers/$(DOCKER_REGISTRY_URL)/g\" $(DOCKER_IMAGES_PATH)/prometheus-deployment.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "cp $(DOCKER_IMAGES_PATH)/alertmanager-deployment-src.yml $(DOCKER_IMAGES_PATH)/alertmanager-deployment.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sed -i \"s/\\$(CEPH_MONS)/$(CEPH_MONS_VALUE)/g\" $(DOCKER_IMAGES_PATH)/alertmanager-deployment.yaml"
+    },
+    {
+      "cmdContent": "sed -i \"s/gcr.io\\/google_containers/$(DOCKER_REGISTRY_URL)/g\" $(DOCKER_IMAGES_PATH)/alertmanager-deployment.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "cp $(DOCKER_IMAGES_PATH)/kube-api-exporter-src.yml $(DOCKER_IMAGES_PATH)/kube-api-exporter.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sed -i \"s/gcr.io\\/google_containers/$(DOCKER_REGISTRY_URL)/g\" $(DOCKER_IMAGES_PATH)/kube-api-exporter.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "cp $(DOCKER_IMAGES_PATH)/node-exporter-src.yml $(DOCKER_IMAGES_PATH)/node-exporter.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sed -i \"s/gcr.io\\/google_containers/$(DOCKER_REGISTRY_URL)/g\" $(DOCKER_IMAGES_PATH)/node-exporter.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ],
+  "createCMDList": [
+    {
+      "cmdContent": "rbd create -p rbd prometheus-rbd --size 2048M",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "rbd create -p rbd alertmanager-rbd --size 2048M",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "kubectl create -f $(DEST_RECV_DIR)/alertmanager-deployment.yaml",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "kubectl create -f $(DEST_RECV_DIR)/kube-api-exporter.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "kubectl create -f $(DEST_RECV_DIR)/node-exporter.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "kubectl create -f $(DEST_RECV_DIR)/prometheus-deployment.yaml",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ]
+}

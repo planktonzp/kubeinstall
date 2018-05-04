@@ -1,0 +1,84 @@
+{
+  "dockerCMDList": [
+    {
+      "cmdContent": "sudo docker load --input $(DOCKER_IMAGES_PATH)/heapster.tar",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sudo docker tag gcr.io/google_containers/jion/heapster:test-1.0.7 $(DOCKER_REGISTRY_URL)/jion/heapster:test-1.0.7",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sudo docker push $(DOCKER_REGISTRY_URL)/jion/heapster:test-1.0.7",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ],
+  "yamlCMDList": [
+    {
+      "cmdContent": "sudo cp $(DOCKER_IMAGES_PATH)/heapster-src.yml $(DOCKER_IMAGES_PATH)/heapster.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sudo sed -i \"s/gcr.io\\/google_containers/$(DOCKER_REGISTRY_URL)/g\" $(DOCKER_IMAGES_PATH)/heapster.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "sudo sed -i \"s/kubernetes.summary_api:port/$(K8S_API_URL)/g\" $(DOCKER_IMAGES_PATH)/heapster.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ],
+  "createCMDList": [
+    {
+      "cmdContent": "kubectl create -f $(DEST_RECV_DIR)/heapster.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    },
+    {
+      "cmdContent": "kubectl create -f $(DEST_RECV_DIR)/heapster-rbac.yaml",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": [
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ]
+}

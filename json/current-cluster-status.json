@@ -1,0 +1,25 @@
+{
+  "token": "04e365.1780d36b4bb2edb5",
+  "masters": [
+
+  ],
+  "nodes": [
+
+  ],
+  "etcd": [
+
+  ],
+  "installTime": "",
+  "version": "",
+  "healthState": "",
+  "dockerRegistryURL": "",
+  "yumStorageRepo": {
+    "name": "",
+    "baseurl": "",
+    "enabled": false,
+    "gpgcheck": false,
+    "gpgkey": ""
+  },
+  "apiServerURL": "10.10.3.39:6443",
+  "masterVirtualIP": "10.10.3.39"
+}

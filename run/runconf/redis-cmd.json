@@ -1,0 +1,35 @@
+{
+  "dockerCMDList": [
+    {
+      "cmdContent": "echo 'test redis docker cmd'",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ],
+  "yamlCMDList": [
+    {
+      "cmdContent": "echo 'test redis yaml cmd'",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ],
+  "createCMDList": [
+    {
+      "cmdContent": "echo 'test redis create cmd'",
+      "errorTags": null,
+      "successTags": null,
+      "cmdHostAddr": "",
+      "envSet": null,
+      "schedulePercent": "",
+      "tips": ""
+    }
+  ]
+}

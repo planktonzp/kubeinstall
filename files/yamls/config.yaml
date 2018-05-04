@@ -1,0 +1,12 @@
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: 10.10.3.37
+etcd:
+  endpoints:
+  - http://10.10.3.37:2379
+  - http://10.10.3.38:2379
+  - http://10.10.3.33:2379
+networking:
+  podSubnet: 10.244.0.0/16
+kubernetesVersion: v1.6.4

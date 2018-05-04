@@ -1,0 +1,37 @@
+#Step 0 ½¡¿µ¼ì²é
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"191.168.252.133": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "191.168.252.133",
+		"Port": 22
+	},
+	"191.168.252.134": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "191.168.252.134",
+		"Port": 22
+	}
+},
+"masterCfg": {
+	"ipSet" :[
+		"192.168.252.133",
+		"192.168.252.134"
+	],
+	"virtualIP": "",
+	"port": "6443"
+},
+"yumCfg": {
+	"ip": "",
+	"repo": {
+	}
+},
+"dockerCfg": {
+	"registryIP": "",
+	"registryPort": "",
+	"UserDockerRegistryURL": ""
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step0CheckParam'

@@ -1,0 +1,18 @@
+{
+    "StopSELinuxCMD": "setenforce 0",
+    "StopFireWalldCMD": "systemctl stop firewalld && systemctl disable firewalld",
+    "DisableSELinuxCMD": "sed -i \"/SELINUX=enforcing/c SELINUX=disabled\" /etc/sysconfig/selinux",
+    "RPMInstallWorkerCMD": "systemctl stop kubeworker && rpm -e kubeworker && rpm -ivh /opt/kubeworker-1.0-1.x86_64.rpm",
+    "WorkerRPMSaveDir": "/opt/",
+    "WorkerStartCMD": "systemctl daemon-reload && systemctl start kubeworker && systemctl enable kubeworker",
+    "WorkerConfDir": "/etc/sysconfig/kubeworker/",
+    "WorkerConf" : {
+        "APIServerPort": "12306",
+	    "LogFileMaxSize": "100",
+	    "LogDir": "/kubeworker/log/",
+	    "BkpDataDirPath": "/kubeworker/bkp/",
+	    "LogPrintLevel": "info",
+        "FireWallStopCMD": "systemctl stop firewalld && systemctl disable firewalld",
+        "ErrorCheckPoints": "failed,failure,error,command not found,Error"
+    }
+}

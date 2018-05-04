@@ -1,0 +1,26 @@
+#!/bin/bash
+ETCD_VERSION=v3.1.8
+TOKEN=my-etcd-token
+CLUSTER_STATE=new
+NAME_1=etcd-node-0
+NAME_2=etcd-node-1
+NAME_3=etcd-node-2
+HOST_1=$ETCD_HOST_1_IP
+HOST_2=$ETCD_HOST_2_IP
+HOST_3=$ETCD_HOST_3_IP
+CLUSTER=${NAME_1}=http://${HOST_1}:2380,${NAME_2}=http://${HOST_2}:2380,${NAME_3}=http://${HOST_3}:2380
+# For node 1
+THIS_NAME=$ETCD_SELF_NAME
+THIS_IP=$ETCD_SELF_HOST_IP
+
+
+
+
+
+sudo docker run --net=host --name etcd --detach quay.io/coreos/etcd:${ETCD_VERSION} \
+        /usr/local/bin/etcd \
+    --data-dir=data.etcd --name ${THIS_NAME} \
+        --initial-advertise-peer-urls http://${THIS_IP}:2380 --listen-peer-urls http://${THIS_IP}:2380 \
+        --advertise-client-urls http://${THIS_IP}:2379 --listen-client-urls http://${THIS_IP}:2379 \
+        --initial-cluster ${CLUSTER} \
+        --initial-cluster-state ${CLUSTER_STATE} --initial-cluster-token ${TOKEN}

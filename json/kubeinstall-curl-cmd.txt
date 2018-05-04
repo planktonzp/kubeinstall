@@ -1,0 +1,267 @@
+###################################Step 1 健康检查##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"172.16.13.105": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"191.168.252.134": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "191.168.252.134",
+		"Port": 22
+	}
+},
+"masterCfg": {
+	"ipSet" :[
+		"172.16.13.105"
+	],
+	"virtualIP": "",
+	"port": "6443"
+},
+"yumCfg": {
+	"ip": "",
+	"repo": {
+	}
+},
+"dockerCfg": {
+	"registryIP": "",
+	"registryPort": "",
+	"UserDockerRegistryURL": ""
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step1CheckInstallPlan'
+
+###################################Step 2 创建YUM仓库(界面保证入参合法性)##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"172.16.13.105": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"172.16.13.106": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"172.16.13.107": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	}
+},
+"yumCfg": {
+	"ip": "172.16.13.105",
+	"repo": {
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step2CreateYUMStorage'
+
+###################################Step 3 安装必要的RPM包（各个节点均需要安装）##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"172.16.13.105": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"172.16.13.106": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"172.16.13.107": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step3InstyallRPMs'
+
+##############################单独测试kubeworker的接口##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"cmdContent":"yum install -y docker",
+"errorTags": [
+"error",
+"failed",
+"failure",
+"command not found",
+"Error"
+],
+"successTags":[
+]
+}
+  
+' 'http://172.16.13.105:9998/exec'
+
+
+###################################Step 4 安装docker 仓库##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"172.16.13.105": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"172.16.13.106": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"172.16.13.107": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	}
+},
+"dockerCfg": {
+	"registryIP": "172.16.13.105",
+	"registryPort": "5000"
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step4CreateDockerRegistry'
+
+
+
+
+#Step 1 健康检查
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"PrepareParam": {
+	"MasterSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step1Prepare'
+
+
+
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{}' 'http://172.16.13.105:12306/prepare'
+
+
+
+
+
+
+
+#Step 2 安装YUM仓库 完整报文
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"YUMParam": {
+	"YUMStorageSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"IsUserDefined": true,
+	"NodesSSHInfoSet":[
+		{
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.108",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.109",
+			"Port": 22
+		}
+	],
+	"RepoContent": {
+		"Name":"ftp",
+		"BaseURL":"ftp://172.16.13.105/pub",
+		"Enabled": true,
+		"GPGCheck": false,
+		"GPGKey": "ftp://172.16.13.105/RPM-GPG-KEY-CentOS-7"
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step2CreateYUMStorage'
+
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"YUMParam": {
+	"YUMStorageSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"IsUserDefined": false
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step2CreateYUMStorage'
+
+
+
+
+
+#Step 3 安装RPM包
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"InstallRPMsParam": {
+	"MasterSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"NodesSSHInfoSet":[
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.108",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.109",
+			"Port": 22
+		}
+	]
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step3InstyallRPMs'
+
+
+
+sed -i "/SELINUX=enforcing/c SELINUX=disabled" /tmp/selinux

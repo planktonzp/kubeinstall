@@ -1,0 +1,64 @@
+{
+  "installK8scc": {
+    "cmdContent":"sudo yum remove -y k8scc && sudo yum install -y k8scc",
+    "errorTags": [
+    ],
+    "successTags":[
+    ]
+  },
+  "modifyFastSetup":[
+    {
+      "cmdContent": "sudo sed -i \"/http.server.port=8282/c http.server.port=$(PORT)\" $(FASTSETUP_CONF_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent": "sudo sed -i \"/http.server.host=192.168.0.81/c http.server.host=$(HOST)\" $(FASTSETUP_CONF_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent": "sudo sed -i \"/kube.subnet=/c kube.subnet=$(SUBNET)\" $(FASTSETUP_CONF_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent": "sudo sed -i \"s/192.168.0.81:8282/$(HOST):$(PORT)/g\" $(INDEX_HTML_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent": "sudo sed -i \"/API_SERVER_PORT=\\\"-port 9998\\\"/c API_SERVER_PORT=\\\"-port $(PORT)\\\"\" $(KUBEWORKER_CONF_PATH)"
+    }
+  ],
+  "startFastSetup": {
+    "cmdContent": "sudo systemctl daemon-reload && sudo systemctl restart k8scc && sudo systemctl status k8scc",
+    "errorTags": [
+    ],
+    "successTags":[
+    ]
+  },
+  "installEntry":[
+    {
+      "cmdContent": "sudo yum remove -y entry && yum install -y entry"
+    },
+    {
+      "cmdContent": "sudo sed -i \"/SERVER_PORT=/c SERVER_PORT=\\\"-port $(ENTRY_PORT)\\\"\" /etc/sysconfig/entry/entry.cfg"
+    },
+    {
+      "cmdContent": "sudo sed -i \"/HEART=/c HEART=\\\"-heart $(ENTRY_HEART)\\\"\" /etc/sysconfig/entry/entry.cfg"
+    },
+    {
+      "cmdContent": "sudo systemctl daemon-reload && sudo systemctl restart entry"
+    }
+  ]
+
+}
