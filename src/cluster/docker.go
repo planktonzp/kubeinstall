@@ -43,8 +43,10 @@ const (
 //DockerConf 构建docker仓库所需的信息
 type DockerConf struct {
 	RegistryIP            string                 `json:"registryIP"`
+	RegistryPath          string                 `json:"registryPath"`	//仓库启动使用的路径
 	RegistryPort          string                 `json:"registryPort"`
 	UserDockerRegistryURL string                 `json:"userDockerRegistryURL"`
+	BaseImgTarPath        string                 `json:"baseImgTarPath"`	//基础镜像压缩包路径
 	Storage               map[string]storagePlan `json:"storage"` // key --- docker ip ;value --- storage plan
 	Graphs                map[string]string      `json:"graphs"`  //k--->docker ip; v--->docker home path
 	UseSwap               bool                   `json:"useSwap"`
@@ -85,13 +87,12 @@ func (p *InstallPlan) checkDocker() (msg.ErrorCode, string) {
 	//return msg.Success
 }
 
-func dynamicCreateDockerRegistryCMD(port string, cmdList []cmd.ExecInfo) []cmd.ExecInfo {
+func dynamicCreateDockerRegistryCMD(Path string, Port string, cmdList []cmd.ExecInfo) []cmd.ExecInfo {
 	newCMDList := []cmd.ExecInfo{}
 
 	for _, cmdInfo := range cmdList {
-		cmdInfo.CMDContent = strings.Replace(cmdInfo.CMDContent, dockerRegistryTarSrcPathKey, receiverOPTPath, -1)
-		cmdInfo.CMDContent = strings.Replace(cmdInfo.CMDContent, "$(HOST_PORT)", port, -1)
-		cmdInfo.CMDContent = strings.Replace(cmdInfo.CMDContent, "$(CONTAINER_PORT)", port, -1)
+		cmdInfo.CMDContent = strings.Replace(cmdInfo.CMDContent, "$(HOST_PATH)", Path, -1)
+		cmdInfo.CMDContent = strings.Replace(cmdInfo.CMDContent, "$(HOST_PORT)", Port, -1)
 		newCMDList = append(newCMDList, cmdInfo)
 	}
 
@@ -108,6 +109,10 @@ func (p *InstallPlan) selfApplyDockerRegistry(conf kubeWorkerCMDConf) {
 	return
 }
 
+/*
+
+//直接解压挂载到仓库内不再上传
+
 func (p *InstallPlan) pushDockerImages() (string, error) {
 	//执行docker镜像上传脚本
 	shFilePath := config.GetSHFilePath() + dockerRegistrySHName
@@ -121,6 +126,20 @@ func (p *InstallPlan) pushDockerImages() (string, error) {
 	logdebug.Println(logdebug.LevelInfo, "==========cmdInfo", cmdInfo)
 
 	//cmd 3 第一遍有错误 上传失败
+
+	return cmdInfo.Exec()
+}
+*/
+
+func (p *InstallPlan) BaseImgTarExtract() (string, error) {
+	//释放基础镜像包，需要保证仓库目录为空
+
+	cmdInfo := cmd.ExecInfo{
+		CMDContent: "mkdir -p " + p.DockerCfg.RegistryPath + " && sudo tar " + "-zxf " + p.DockerCfg.BaseImgTarPath + "/baseimg.tar.gz -C " + p.DockerCfg.RegistryPath,
+		ErrorTags:  []string{"push docker images failed", "Permission denied"},
+	}
+
+	logdebug.Println(logdebug.LevelInfo, "==========cmdInfo", cmdInfo)
 
 	return cmdInfo.Exec()
 }
@@ -189,6 +208,28 @@ func (p *InstallPlan) createDefaultDockerRegistry(sessionID int) error {
 
 	logdebug.Println(logdebug.LevelInfo, "----发送registry.tar给主机-----", hostSSH.HostAddr)
 
+	//释放基础镜像压缩包到registry存储目录
+
+	output, err := p.BaseImgTarExtract()
+
+	if err != nil {
+		return err
+	}
+
+	context.Stdout = output
+	context.SchedulePercent = "50%"
+
+	updateNodeScheduler(hostSSH.HostAddr, "50%", state.Running, "正在释放基础镜像压缩包!")
+
+	if err != nil {
+		context.State = state.Error
+		state.Update(sessionID, context)
+
+		setErrNodeScheduler(hostSSH.HostAddr, "", err.Error(), "释放压缩包失败!")
+
+		return err
+	}
+
 	conf := kubeWorkerCMDConf{}
 	err = runconf.Read(runconf.DataTypeKubeWorkerCMDConf, &conf)
 	if err != nil {
@@ -201,15 +242,15 @@ func (p *InstallPlan) createDefaultDockerRegistry(sessionID int) error {
 		return err
 	}
 
-	conf.CreateDockerRegistryCMDList = dynamicCreateDockerRegistryCMD(p.DockerCfg.RegistryPort, conf.CreateDockerRegistryCMDList)
+	conf.CreateDockerRegistryCMDList = dynamicCreateDockerRegistryCMD(p.DockerCfg.RegistryPath, p.DockerCfg.RegistryPort, conf.CreateDockerRegistryCMDList)
 
 	url := "http://" + hostSSH.HostAddr + ":" + config.GetWorkerPort() + workerServerPath
 
 	//加载镜像 启动仓库 开始搭建 仓库存在 仅提示 继续往下执行
 	//cmd 2
-	conf.CreateDockerRegistryCMDList = addSchedulePercent(conf.CreateDockerRegistryCMDList, "50%")
+	conf.CreateDockerRegistryCMDList = addSchedulePercent(conf.CreateDockerRegistryCMDList, "75%")
 
-	updateNodeScheduler(hostSSH.HostAddr, "50%", state.Running, "正在创建docker仓库!")
+	updateNodeScheduler(hostSSH.HostAddr, "75%", state.Running, "正在创建docker仓库!")
 
 	_, err = sendCMDToK8scc(sessionID, url, conf.CreateDockerRegistryCMDList)
 
@@ -218,24 +259,17 @@ func (p *InstallPlan) createDefaultDockerRegistry(sessionID int) error {
 	p.DockerCfg.UserDockerRegistryURL = config.GetDockerRegistryVip() + ":" + p.DockerCfg.RegistryPort
 
 	p.selfApplyDockerRegistry(conf)
+
+/*
+//因为直接解压挂载到容器内 所以不再push
 	output, err := p.pushDockerImages()
+
 	if err != nil {
 		return err
 	}
 
 	context.Stdout = output
-	context.SchedulePercent = "75%"
-
-	updateNodeScheduler(hostSSH.HostAddr, "75%", state.Running, "正在执行上传镜像脚本!")
-
-	if err != nil {
-		context.State = state.Error
-		state.Update(sessionID, context)
-
-		setErrNodeScheduler(hostSSH.HostAddr, "", err.Error(), "执行上传镜像脚本失败!")
-
-		return err
-	}
+*/
 
 	//内部的exec模块没有写输出到state模块
 	state.Update(sessionID, context)
