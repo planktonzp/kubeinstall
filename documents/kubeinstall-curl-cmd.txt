@@ -1,0 +1,912 @@
+###################################Step 1 健康检查##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"主机1(10.10.3.39)": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	}
+},
+"masterCfg": {
+	"k8sMasterIPSet": [
+		"10.10.3.39"
+	],
+	"virtualIP": "10.10.3.222",
+	"port": "6443",
+	"netWorkCNI": "calico",
+	"podNetworkCIDR": "10.244.0.0/16",
+	"AccessIPList": {
+		"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+		}
+	}
+},
+"yumCfg": {
+	"ip": "10.10.3.39",
+	"repo": {
+	}
+},
+"dockerCfg": {
+	"registryIP": "",
+	"registryPort": "",
+	"UserDockerRegistryURL": "1.2.3.4:5000"
+},
+"etcdCfg": {
+	"Hosts": [
+		"10.10.3.39",
+		"10.10.3.40",
+		"10.10.3.41"
+	],
+	"sshHosts": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	}
+},
+"cephCfg": {
+	"hostnameSet": {
+		"cd002": "10.10.3.39",
+		"cd003": "10.10.3.40",
+		"cd004": "10.10.3.41"
+	},
+	"nodesSSHSet": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	},
+	"rolesSet": {
+		"10.10.3.39": {
+			"types": [
+				"osd",
+				"rgw",
+				"mds",
+				"mon"
+			],
+			"attribute": {
+				"osdMediaType": "file",
+				"osdMediasPath": {
+					"/home/ceph_journal_test1": "/home/ceph_data_test1",
+					"/home/ceph_journal_test2": "/home/ceph_data_test2"
+				}
+			}
+		},
+		"10.10.3.40": {
+			"types": [
+				"osd",
+				"rgw",
+				"mds",
+				"mon"
+			],
+			"attribute": {
+				"osdMediaType": "file",
+				"osdMediasPath": {
+					"/home/ceph_journal_test1": "/home/ceph_data_test1",
+					"/home/ceph_journal_test2": "/home/ceph_data_test2"
+				}
+			}
+		},
+		"10.10.3.41": {
+			"types": [
+				"osd",
+				"mon"
+			],
+			"attribute": {
+				"osdMediaType": "disk",
+				"osdMediasPath": {
+					"/home/ceph_journal_test1": "/home/ceph_data_test1",
+					"/home/ceph_journal_test2": "/home/ceph_data_test2"
+				}
+			}
+		}
+	},
+	"GlobalCfg": {
+		"isOsdCrushUpdateOnStart": false,
+		"osdJournalSize": 20480,
+		"monPgWarnMaxPerOsd": 1000,
+		"maxOpenFiles": 131072,
+		"osdScrubBeginHour": 1,
+		"osdScrubEndHour": 7
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step1CheckInstallPlan'
+
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"主机1(10.10.3.39)": {
+		"UserName": "root1",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	}
+},
+"masterCfg": {
+	"k8sMasterIPSet": [
+		"10.10.3.39"
+	],
+	"virtualIP": "10.10.3.222",
+	"port": "6443",
+	"netWorkCNI": "calico",
+	"podNetworkCIDR": "10.244.0.0/16",
+	"AccessIPList": {
+		"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+		}
+	}
+},
+"yumCfg": {
+	"ip": "10.10.3.39",
+	"repo": {
+	}
+},
+"dockerCfg": {
+	"registryIP": "",
+	"registryPort": "",
+	"UserDockerRegistryURL": "1.2.3.4:5000"
+},
+"etcdCfg": {
+	"Hosts": [
+		"10.10.3.39"
+		
+	],
+	"sshHosts": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step1CheckInstallPlan'
+
+###################################Step 2 创建YUM仓库(界面保证入参合法性)##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"10.10.3.40": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"10.10.3.41": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	},
+	"10.10.3.42":{
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.104",
+		"Port": 22
+	}
+},
+"yumCfg": {
+	"ip": "10.10.3.39",
+	"repo": {
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step2CreateYUMStorage'
+
+
+"yumCfg": {
+	"ip": "",
+	"repo": {
+		"name":"ftp",
+		"baseurl": "ftp://10.10.3.39/pub",
+		"enabled": true
+		"gpgcheck":false
+		"gpgkey": "ftp://10.10.3.39/RPM-GPG-KEY-CentOS-7"
+	}
+}
+
+####################################反操作 移除yum源(提供所有主机SSH)#######################################
+curl -X DELETE --header 'Content-Type: application/json' --header 'Accept: application/json' -d '
+{
+"machineSSHSet": {
+	"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"10.10.3.40": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"10.10.3.41": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	},
+	"10.10.3.42":{
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.104",
+		"Port": 22
+	}
+}
+}
+' 'http://localhost:9999/cluster/remove/step2CreateYUMStorage'
+
+###################################Step 3 安装必要的RPM包（各个节点均需要安装）##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"10.10.3.40": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"10.10.3.41": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	}
+}
+}
+  
+' 'http://localhost:9999/cluster/create/step3InstallRPMs'
+
+
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	}
+}
+}
+  
+' 'http://localhost:9999/cluster/create/stepXKill'
+
+####################################反操作 移除核心rpm包(提供所有主机SSH)#######################################
+curl -X DELETE --header 'Content-Type: application/json' --header 'Accept: application/json' -d '
+{
+"machineSSHSet": {
+	"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"10.10.3.40": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"10.10.3.41": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	},
+	"10.10.3.42":{
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.104",
+		"Port": 22
+	}
+}
+}
+' 'http://localhost:9999/cluster/remove/step3InstallRPMs'
+
+
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"10.10.3.42":{
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.104",
+		"Port": 22
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step3InstallRPMs'
+
+##############################单独测试kubeworker的接口##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"cmdContent":"chmod 777 /opt/ceph-ssh.sh && /opt/ceph-ssh.sh root@cd002.novalocal@docker root@cd003.novalocal@docker root@cd004.novalocal@docker"
+}
+' 'http://172.16.13.105:12306/flash/jobs/exec'
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"cmdContent":"sed -n '/pause-amd64:3.0/'p /home/10-kubeadm.conf"
+}
+' 'http://172.16.13.105:12306/exec'
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"cmdContent":"ls",
+}
+' 'http://10.10.3.39:12306/flash/jobs/exec'
+
+
+###################################Step 4 安装docker 仓库##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+	"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"10.10.3.40": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"10.10.3.41": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	},
+	"10.10.3.42":{
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.104",
+		"Port": 22
+	}
+},
+"dockerCfg": {
+	"registryIP": "10.10.3.39",
+	"registryPort": "5000",
+	"storage": {
+		"10.10.3.39": {
+			"type": "derict_pool",
+			"driver": "overlay2",
+			"devs": "/dev/sde",
+			"growPart": true,
+			"wipeSigNatures": true
+		},
+		"10.10.3.40": {
+			"type": "derict_pool",
+			"driver": "overlay2",
+			"devs": "/dev/sde",
+			"growPart": true,
+			"wipeSigNatures": true
+		},
+		"10.10.3.41": {
+			"type": "derict_pool",
+			"driver": "overlay2",
+			"devs": "/dev/sde",
+			"growPart": true,
+			"wipeSigNatures": true
+		},
+		"10.10.3.42": {
+			"type": "derict_pool",
+			"driver": "overlay2",
+			"devs": "/dev/sde",
+			"growPart": true,
+			"wipeSigNatures": true
+		}
+	}
+}
+}
+  
+' 'http://localhost:9999/cluster/create/step4CreateDockerRegistry'
+
+####################################反操作 移除docker仓库(提供所有主机SSH)#######################################
+curl -X DELETE --header 'Content-Type: application/json' --header 'Accept: application/json' -d '
+{
+"machineSSHSet": {
+	"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"10.10.3.40": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.106",
+		"Port": 22
+	},
+	"10.10.3.41": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.107",
+		"Port": 22
+	},
+	"10.10.3.42":{
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.104",
+		"Port": 22
+	}
+}
+}
+' 'http://localhost:9999/cluster/remove/step4CreateDockerRegistry'
+
+###################################Step 5 安装etcd 集群##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"etcdCfg": {
+	"Hosts": [
+		"10.10.3.39",
+		"10.10.3.40",
+		"10.10.3.41"
+	],
+	"sshHosts": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	}
+}
+}
+  
+' 'http://localhost:9999/cluster/create/step5InstallEtcd'
+
+####################################反操作 移除etcd(提供之前安装的ETCD集群主机SSH)#######################################
+curl -X DELETE --header 'Content-Type: application/json' --header 'Accept: application/json' -d '
+{
+"etcdCfg": {
+	"Hosts": [
+		"10.10.3.39",
+		"10.10.3.40",
+		"10.10.3.41"
+	],
+	"sshHosts": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	}
+}
+}
+' 'http://localhost:9999/cluster/remove/step5InstallEtcd'
+
+###################################Step 6.1 初始化master节点 ##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"masterCfg": {
+	"k8sMasterIPSet": [
+		"10.10.3.39"
+	],
+	"virtualIP": "10.10.3.222",
+	"port": "6443",
+	"netWorkCNI": "calico",
+	"podNetworkCIDR": "10.244.0.0/16",
+	"AccessIPList": {
+		"10.10.3.39": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+		}
+	}
+}
+}
+  
+' 'http://localhost:9999/cluster/create/step6MasterInit'
+
+
+###################################Step 6.2 初始化HAmaster节点 ##################################
+ 
+
+
+####################################反操作 移除master(提供之前安装ha的3个节点ssh)#######################################
+curl -X DELETE --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"machineSSHSet": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	}
+}
+  
+' 'http://localhost:9999/cluster/remove/step6MasterInit'
+
+
+###################################Step 7 node节点join ##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"nodesCfg": {
+	"nodesIPSet": {
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	},
+	"nodesNameMap": {
+		"10.10.3.40": "cd003.novalocal",
+		"10.10.3.41": "cd004.novalocal"
+	}
+}
+
+}
+  
+' 'http://localhost:9999/cluster/create/step7NodesJoin'
+
+####################################反操作 移除node(提供想要移除的node SSH信息)#######################################
+curl -X DELETE --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"nodesCfg": {
+	"nodesIPSet": {
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	},
+	"nodesNameMap": {
+		"10.10.3.40": "cd003.novalocal",
+		"10.10.3.41": "cd004.novalocal"
+	}
+}
+}
+  
+' 'http://localhost:9999/cluster/remove/step7NodesJoin'
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"nodesCfg": {
+	"nodesIPSet": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		}
+	}
+}
+
+}
+  
+' 'http://localhost:9999/cluster/create/step7NodesJoin'
+###################################Step XTest 测试 ##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+}
+  
+' 'http://localhost:9999/cluster/create/stepXTest'
+
+
+###################################Step 8 安装ceph ##################################
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"cephCfg": {
+	"hostnameSet": {
+		"cd002": "10.10.3.39",
+		"cd003": "10.10.3.40",
+		"cd004": "10.10.3.41"
+	},
+	"nodesSSHSet": {
+		"10.10.3.39": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		"10.10.3.40": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.106",
+			"Port": 22
+		},
+		"10.10.3.41": {
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		}
+	},
+	"rolesSet": {
+		"10.10.3.39": {
+			"types": [
+				"osd",
+				"rgw",
+				"mds",
+				"mon"
+			],
+			"attribute": {
+				"osdMediaType": "file",
+				"osdMediasPath": {
+					"/home/ceph_journal_test1": "/home/ceph_data_test1",
+					"/home/ceph_journal_test2": "/home/ceph_data_test2"
+				}
+			}
+		},
+		"10.10.3.40": {
+			"types": [
+				"osd",
+				"rgw",
+				"mds",
+				"mon"
+			],
+			"attribute": {
+				"osdMediaType": "file",
+				"osdMediasPath": {
+					"/home/ceph_journal_test1": "/home/ceph_data_test1",
+					"/home/ceph_journal_test2": "/home/ceph_data_test2"
+				}
+			}
+		},
+		"10.10.3.41": {
+			"types": [
+				"osd",
+				"mon"
+			],
+			"attribute": {
+				"osdMediaType": "disk",
+				"osdMediasPath": {
+					"/home/ceph_journal_test1": "/home/ceph_data_test1",
+					"/home/ceph_journal_test2": "/home/ceph_data_test2"
+				}
+			}
+		}
+	},
+	"GlobalCfg": {
+		"isOsdCrushUpdateOnStart": false,
+		"osdJournalSize": 20480,
+		"monPgWarnMaxPerOsd": 1000,
+		"maxOpenFiles": 131072,
+		"osdScrubBeginHour": 1,
+		"osdScrubEndHour": 7
+	}
+}
+}' 'http://localhost:9999/cluster/create/step8InstallCeph'
+
+
+
+
+#Step 1 健康检查
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"PrepareParam": {
+	"MasterSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step1Prepare'
+
+
+
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{}' 'http://172.16.13.105:12306/prepare'
+
+
+
+
+
+
+
+#Step 2 安装YUM仓库 完整报文
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"YUMParam": {
+	"YUMStorageSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"IsUserDefined": true,
+	"NodesSSHInfoSet":[
+		{
+			"UserName": "root",
+			"Password": "docker",
+			"HostAddr": "172.16.13.105",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.108",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.109",
+			"Port": 22
+		}
+	],
+	"RepoContent": {
+		"Name":"ftp",
+		"BaseURL":"ftp://172.16.13.105/pub",
+		"Enabled": true,
+		"GPGCheck": false,
+		"GPGKey": "ftp://172.16.13.105/RPM-GPG-KEY-CentOS-7"
+	}
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step2CreateYUMStorage'
+
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"YUMParam": {
+	"YUMStorageSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"IsUserDefined": false
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step2CreateYUMStorage'
+
+
+
+
+
+#Step 3 安装RPM包
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+"InstallRPMsParam": {
+	"MasterSSHInfo": {
+		"UserName": "root",
+		"Password": "docker",
+		"HostAddr": "172.16.13.105",
+		"Port": 22
+	},
+	"NodesSSHInfoSet":[
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.107",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.108",
+			"Port": 22
+		},
+		{
+			"UserName": "root",
+			"Password": "xxxxx",
+			"HostAddr": "172.16.13.109",
+			"Port": 22
+		}
+	]
+}
+}
+  
+' 'http://192.168.252.138:9999/cluster/create/step3InstyallRPMs'
+
+
+
+sed -i "/SELINUX=enforcing/c SELINUX=disabled" /tmp/selinux
+
+
+
+/var/lib/kubelet is not empty
+        /etc/kubernetes/pki/ca.crt already exists
+        /etc/kubernetes/kubelet.conf already exists
+

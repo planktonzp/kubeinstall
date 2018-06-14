@@ -1,0 +1,10 @@
+.idea
+rpm/kubeinstall/build
+rpm/kubeinstall/*.rpm
+rpm/kubeinstall/_CPack_Packages
+
+.directory
+files/
+src/kubeinstall
+src/registry.tar
+rpm/kubeworker/

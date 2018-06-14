@@ -1,0 +1,658 @@
+{
+  "InstallCoreCMDList": [
+    {
+      "cmdContent":"sudo yum install -y docker && sudo systemctl enable docker",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在安装docker!"
+    },
+    {
+      "cmdContent": "sudo yum install -y kubelet && sudo  systemctl enable kubelet",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在安装kubelet!"
+    },
+    {
+      "cmdContent": "sudo yum install -y kubeadm",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在安装kubeadm!"
+    },
+    {
+      "cmdContent": "sudo yum install -y kubectl",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在安装kubectl!"
+    },
+    {
+      "cmdContent": "sudo yum install -y kubernetes-cni",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在安装kubernetes-cni!"
+    },
+    {
+      "cmdContent": "sudo yum install -y keepalived",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在安装keepalived!"
+    },
+    {
+      "cmdContent": "sudo yum install -y haproxy",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在安装haproxy!"
+    }
+  ],
+  "createDockerStorageCMDList": [
+    {
+      "cmdContent":"for devName in $(DEV_PATH_SET);do if [ ! -n $devName ]; then echo 'DEV_PATH is NULL!'; else echo 'GOOD JOB';sudo dd if=/dev/zero of=$devName count=1 bs=4M; fi ; done",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在格式化磁盘"
+    },
+    {
+      "cmdContent":"sudo pvcreate $(DEV_PATH_SET)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在创建pv"
+    },
+    {
+      "cmdContent":"sudo vgcreate $(VG_NAME) $(DEV_PATH_SET)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在创建vg"
+    },
+    {
+      "cmdContent":"sudo lvcreate --wipesignatures y -n thinpool $(VG_NAME) -l $(DATA_VOLUME_PERCENT)%VG",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在创建lv"
+    },
+    {
+      "cmdContent":"sudo lvcreate --wipesignatures y -n thinpoolmeta $(VG_NAME) -l $(METADATA_VOLUME_PERCENT)%VG",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在创建lv"
+    },
+    {
+      "cmdContent":"sudo lvconvert -y --zero n -c $(LVM_VOLUME_STORAGE_SIZE)K --thinpool $(VG_NAME)/thinpool --poolmetadata $(VG_NAME)/thinpoolmeta",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在执行lvconvert"
+    },
+    {
+      "cmdContent":"echo \"$(THIN_POOL_CFG)\" >/etc/lvm/profile/$(VG_NAME)-thinpool.profile",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent":"sudo lvchange --metadataprofile $(VG_NAME)-thinpool $(VG_NAME)/thinpool",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在执行lvchange"
+    },
+    {
+      "cmdContent":"echo \"DOCKER_STORAGE_OPTIONS=\\\"--storage-driver=devicemapper --storage-opt=dm.thinpooldev=/dev/mapper/$(VG_NAME)-thinpool --storage-opt dm.use_deferred_removal=true\\\"\" >/etc/sysconfig/docker-storage",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent":"sudo rm -rf /var/lib/docker/*",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在删除/var/lib/docker/"
+    }
+  ],
+  "applyDockerRegistryCMDList": [
+    {
+      "cmdContent":"sudo sed -i \"/OPTIONS/c OPTIONS='--graph=$(DOCKER_GRAPH_PATH) --log-driver=json-file --signature-verification=false -H tcp://0.0.0.0:28015 -H unix:///var/run/docker.sock --insecure-registry=$(DOCKER_REGISTRY_URL) --add-registry=$(DOCKER_REGISTRY_URL)'\" $(DOCKER_CONF_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在应用docker仓库"
+    },
+    {
+      "cmdContent":"echo 重启docker && sudo systemctl restart docker",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    }
+  ],
+  "createDockerRegistryCMDList": [
+    {
+      "cmdContent":"echo 加载registry.tar && sudo docker load --input $(DOCKER_REGISTRY_TAR_PATH)/registry.tar && tar /tmp/baseimg.tar.gz -C $(DOCKER_BASEIMAGES_TAR_PATH)",
+      "errorTags": [
+        "error",
+        "failed",
+        "failure",
+        "command not found",
+        "Error"
+      ],
+      "successTags":[
+      ],
+      "tips":"正在加载仓库镜像"
+    },
+    {
+      "cmdContent":"echo 运行dockerRun启动仓库 && sudo docker run -d -p $(HOST_PORT):$(CONTAINER_PORT) -v $(DOCKER_BASEIMAGES_TAR_PATH):/var/lib/registry --restart=always registry:2.6.0",
+      "errorTags": [
+        "error",
+        "failed",
+        "failure",
+        "command not found",
+        "Error"
+      ],
+      "successTags":[
+      ],
+      "tips":"正在启动docker仓库"
+    }
+  ],
+  "modifyKubeletCMDList": [
+    {
+      "cmdContent":"sudo sed -i '1a\\Environment=\\\"KUBELET_EXTRA_ARGS=--pod-infra-container-image=$(DOCKER_REGISTRY_URL)/pause-amd64:3.0\\\"' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent": "sudo sed -i \"s/--cadvisor-port=0/--cadvisor-port=4194/g\" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
+    },
+    {
+      "cmdContent":"sudo systemctl daemon-reload && sudo  systemctl restart kubelet",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    }
+  ],
+  "checkKubeletConfCMD": {
+    "cmdContent":"sudo sed -n '/KUBELET_EXTRA_ARGS=--pod-infra-container-image=$(DOCKER_REGISTRY_URL)\\/pause-amd64:3.0/'p /etc/systemd/system/kubelet.service.d/10-kubeadm.conf",
+    "errorTags": [
+    ],
+    "successTags":[
+    ]
+  },
+  "modifyEtcProfileCMDList":[
+    {
+      "cmdContent":"sudo sed -i '$a\\export KUBECONFIG=/etc/kubernetes/admin.conf' /etc/profile",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    },
+    {
+      "cmdContent": "source /etc/profile"
+    }
+  ],
+  "checkEtcProfileCMD": {
+    "cmdContent":"sudo sed -n '/export KUBECONFIG=\\/etc\\/kubernetes\\/admin.conf/'p /etc/profile",
+    "errorTags": [
+    ],
+    "successTags":[
+    ]
+  },
+  "installEtcdCMDList": [
+    {
+      "cmdContent":"echo 执行etcd安装脚本 && chmod 777 /opt/install-etcd.sh && /opt/install-etcd.sh",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+        "$(ETCD_ENV_HOST1_KEY)=$(ETCD_ENV_HOST1_VALUE)",
+        "$(ETCD_ENV_HOST2_KEY)=$(ETCD_ENV_HOST2_VALUE)",
+        "$(ETCD_ENV_HOST3_KEY)=$(ETCD_ENV_HOST3_VALUE)",
+        "$(ETCD_ENV_SELF_HOST_KEY)=$(ETCD_ENV_SELF_HOST_VALUE)",
+        "$(ETCD_ENV_SELF_NAME_KEY)=$(ETCD_ENV_SELF_NAME_VALUE)",
+        "$(ETCD_IMAGE_PREFFIX_KEY)=$(ETCD_IMAGE_PREFFIX_VALUE)"
+      ],
+      "tips":"正在执行安装etcd脚本"
+    }
+  ],
+  "initStandaloneMasterCMDList": [
+    {
+      "cmdContent":"sudo systemctl restart keepalived && sudo systemctl enable keepalived && sudo systemctl status keepalived",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在重启keepalived!"
+    },
+    {
+      "cmdContent":"sudo systemctl restart haproxy && sudo systemctl enable haproxy && sudo systemctl status haproxy",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在重启haproxy!"
+    },
+    {
+      "cmdContent":"sudo sysctl -w net.bridge.bridge-nf-call-iptables=1",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"sudo swapoff -a && sudo kubeadm reset",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在执行kubeadm reset!"
+    },
+    {
+      "cmdContent":"sudo kubeadm init --config /opt/config.yaml",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+        "KUBE_REPO_PREFIX=$(KUBE_REPO_PREFIX_VALUE)",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin"
+      ],
+      "tips":"正在执行kubeadm init!"
+    }
+  ],
+  "getK8sTokenCMD":{
+    "cmdContent":"sudo kubeadm token list | grep signing | awk {'print $1'}",
+    "errorTags": [
+    ],
+    "successTags":[
+    ],
+    "envSet":[
+    ],
+    "tips":"正在获取集群token!"
+  },
+  "nodeJoinCMDList": [
+    {
+      "cmdContent":"sudo sysctl -w net.bridge.bridge-nf-call-iptables=1",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"sudo swapoff -a && sudo kubeadm reset",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"sudo kubeadm join --token $(TOKEN) $(MASTER_API_URL)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在将Node加入集群!"
+    }
+  ],
+  "cleanDockerRegistryCMDList" :[
+
+  ],
+  "cleanDockerClientCMDList": [
+    {
+      "cmdContent":"sudo systemctl stop docker",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在停止docker"
+    },
+    {
+      "cmdContent":"sudo rm /var/lib/docker/* -rf",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在删除docker数据"
+    },
+    {
+      "cmdContent":"echo y | vgremove $(VG_NAME)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在删除vg"
+    },
+    {
+      "cmdContent":"sudo pvremove $(DEV_PATH_SET)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在删除pv"
+    }
+  ],
+  "cleanEtcdCMDList": [
+    {
+      "cmdContent":"sudo docker ps | grep etcd | awk {'print $1'}",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    }
+  ],
+  "resetMasterCMDList": [
+    {
+      "cmdContent":"sudo kubeadm reset",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    }
+  ],
+  "deleteNodesCMDList": [
+    {
+      "cmdContent":"kubectl delete node $(NODE_NAME)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+	    "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "tips":"正在删除node"
+    }
+  ],
+  "cleanNodesCMDList": [
+    {
+      "cmdContent":"sudo kubeadm reset",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    }
+  ],
+  "restartLoadBalanceCMDList": [
+    {
+      "cmdContent":"sudo systemctl restart keepalived",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"sudo systemctl restart haproxy",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    }
+  ],
+  "installCephCMDList": [
+    {
+      "cmdContent":"sudo yum install -y ceph-deploy",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在安装ceph组件!"
+    },
+    {
+      "cmdContent":"sudo yum install -y ceph ceph-radosgw && sudo yum install -y expect",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在安装ceph组件!"
+    },
+    {
+      "cmdContent":"sudo yum install -y expect",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在安装expect!"
+    },
+    {
+      "cmdContent":"sudo yum install -y xfs*",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在安装xfs!"
+    },
+    {
+      "cmdContent":"sudo  yum erase -y ntp && sudo yum install -y ntp",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在安装ntp!"
+    }
+  ],
+  "createSSHKeyCMDList": [
+    {
+      "cmdContent":"",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    }
+  ],
+  "setMaxProcCMDList": [
+    {
+      "cmdContent":"",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    }
+  ],
+  "setCephGlobalCfgCMDList" : [
+    {
+      "cmdContent":"sudo mkdir -p /opt/ceph && cd /opt/ceph &&  ceph-deploy new$(MON_NODE_LIST)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ],
+      "tips":"正在执行ceph-deploy new!"
+    }
+  ],
+  "removeCephCMDList": [
+    {
+      "cmdContent":"sudo umount /var/lib/ceph/osd/*",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"sudo rm /var/run/ceph/* -rf",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"rm /var/lib/ceph/* -rf",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"sudo rm /etc/ceph/* -rf",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"ceph-deploy purge $(CEPH_NODE_LIST)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"ceph-deploy purgedata $(CEPH_NODE_LIST)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"ceph-deploy forgetkeys",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    },
+    {
+      "cmdContent":"ps aux|grep ceph |awk '{print $2}'|xargs kill -9",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+      ]
+    }
+  ],
+  "setCephClientCMDList": [
+
+  ],
+  "installK8sModulesCMDList" : [
+    {
+      "cmdContent":"kubectl create -f /opt/influxdb.yaml",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "tips": "正在创建influxdb!"
+    },
+    {
+      "cmdContent":"kubectl create -f /opt/heapster.yaml",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "tips": "正在创建heapster!"
+    },
+    {
+      "cmdContent":"kubectl create -f /opt/dns-monitor.yaml",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "envSet":[
+        "KUBECONFIG=/etc/kubernetes/admin.conf"
+      ],
+      "tips": "正在创建dns-monitor!"
+    }
+  ]
+}

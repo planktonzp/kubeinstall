@@ -1,0 +1,79 @@
+{
+  "installK8scc": {
+    "cmdContent":"yum remove -y k8scc && yum install -y k8scc",
+    "errorTags": [
+    ],
+    "successTags":[
+    ],
+    "tips":"正在安装k8scc!"
+  },
+  "modifyFastSetup":[
+    {
+      "cmdContent": "sed -i \"/http.server.port=8282/c http.server.port=$(PORT)\" $(FASTSETUP_CONF_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在修改k8scc配置!"
+    },
+    {
+      "cmdContent": "sed -i \"/http.server.host=192.168.0.81/c http.server.host=$(HOST)\" $(FASTSETUP_CONF_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在修改k8scc配置!"
+    },
+    {
+      "cmdContent": "sed -i \"/kube.subnet=/c kube.subnet=$(SUBNET)\" $(FASTSETUP_CONF_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在修改k8scc配置!"
+    },
+    {
+      "cmdContent": "sed -i \"s/192.168.0.81:8282/$(HOST):$(PORT)/g\" $(INDEX_HTML_PATH)",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips":"正在修改k8scc配置!"
+    },
+    {
+      "cmdContent": "sed -i \"/API_SERVER_PORT=\\\"-port 9998\\\"/c API_SERVER_PORT=\\\"-port $(PORT)\\\"\" $(KUBEWORKER_CONF_PATH)"
+    }
+  ],
+  "startFastSetup": {
+    "cmdContent": "systemctl daemon-reload && systemctl restart k8scc && systemctl enable k8scc && systemctl status k8scc",
+    "errorTags": [
+    ],
+    "successTags":[
+      "Active: active (running)"
+    ],
+    "tips":"正在启动k8scc!"
+  },
+  "uninstallRPMsCMDList": [
+    {
+      "cmdContent":"echo 卸载核心rpm包",
+      "errorTags": [
+      ],
+      "successTags":[
+      ]
+    }
+  ],
+  "installEntry":[
+    {
+      "cmdContent": "yum remove -y entry && yum install -y entry"
+    },
+    {
+      "cmdContent": "sed -i \"/SERVER_PORT=/c SERVER_PORT=\\\"-port $(ENTRY_PORT)\\\"\" /etc/sysconfig/entry/entry.cfg"
+    },
+    {
+      "cmdContent": "sed -i \"/HEART=/c HEART=\\\"-heart $(ENTRY_HEART)\\\"\" /etc/sysconfig/entry/entry.cfg"
+    },
+    {
+      "cmdContent": "systemctl daemon-reload && systemctl restart entry"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+[Unit]
+Description=kubeinstall -install kuberneters on hosts
+Documentation=http://nginx.org/en/docs/
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/kubeinstall/kubeinstall.cfg
+ExecStart=/usr/bin/kubeinstall \
+            $API_SERVER_PORT \
+            $LOG_LEVEL \
+            $LOG_DIR \
+	    $VIRTUAL_ROUTER_ID \
+            $LOG_FILE_MAX_SIZE \
+            $CNI_TYPE \
+            $ENTRY_PORT \
+            $ENTRY_HEART \
+            $K8S_VERSION \
+            $DOCKER_REGISTRY_VIP \
+            $SVC_PORT_RANGE \
+            $DOCKER_HOME_DIR \
+            $WORK_DIR \
+            $MASTER_INTERFACE
+
+[Install]
+WantedBy=multi-user.target

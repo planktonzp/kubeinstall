@@ -1,0 +1,140 @@
+{
+  "createPubDir": {
+    "cmdContent": "sudo mkdir -p /var/ftp/pub/",
+    "errorTags": [
+	"tty"
+    ],
+    "successTags":[
+    ],
+    "tips": "正在创建pub目录"
+  },
+  "installVsftpdCMDList":[
+    {
+      "cmdContent": "sudo rpm -ivh $(INSTALL_DIR)/vsftpd-3.0.2-21.el7.x86_64.rpm",
+      "errorTags": [
+        "error",
+        "failed",
+        "failure",
+        "command not found",
+        "Error"
+      ],
+      "successTags":[
+      ],
+      "tips": "正在安装vsftpd"
+    }
+  ],
+  "startVsftpdCMDList": [
+    {
+      "cmdContent": "sudo systemctl start vsftpd",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在启动vsftpd"
+    },
+    {
+      "cmdContent": "sudo systemctl enable vsftpd",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在配置开机自启动vsftpd"
+    },
+    {
+      "cmdContent": "sudo systemctl status vsftpd"
+    }
+  ],
+  "installCreateRepoCMDList":[
+    {
+      "cmdContent": "sudo rpm -iUvh $(INSTALL_DIR)/libxml2-2.9.1-6.el7_2.3.x86_64.rpm",
+      "successTags":[
+      ],
+      "tips": "正在安装libxml2"
+    },
+    {
+      "cmdContent": "sudo rpm -ivh $(INSTALL_DIR)/libxml2-python-2.9.1-6.el7_2.3.x86_64.rpm",
+      "successTags":[
+      ],
+      "tips": "正在安装libxml2-python"
+    },
+    {
+      "cmdContent": "sudo rpm -ivh $(INSTALL_DIR)/deltarpm-3.6-3.el7.x86_64.rpm",
+      "successTags":[
+      ],
+      "tips": "正在安装deltarpm"
+    },
+    {
+      "cmdContent": "sudo rpm -ivh $(INSTALL_DIR)/python-deltarpm-3.6-3.el7.x86_64.rpm",
+      "successTags":[
+      ],
+      "tips": "正在安装python-deltarpm"
+    },
+    {
+      "cmdContent": "sudo rpm -ivh $(INSTALL_DIR)/createrepo-0.9.9-26.el7.noarch.rpm",
+      "successTags":[
+      ],
+      "tips": "正在安装createrepo"
+    }
+  ],
+  "backupOldRepos": {
+    "errorTags": [
+    ],
+    "successTags":[
+    ],
+    "tips": "正在备份旧的yum配置"
+  },
+  "yumMakeCacheCMDList": [
+    {
+      "cmdContent": "sudo setenforce 0",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在关闭selinux"
+    },
+    {
+      "cmdContent": "sudo sed -i \"/SELINUX=enforcing/c SELINUX=disabled\" /etc/sysconfig/selinux",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在修改selinux配置"
+    },
+    {
+      "cmdContent": "sudo systemctl stop firewalld && sudo systemctl disable firewalld",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在关闭防火墙"
+    },
+    {
+      "cmdContent": "sudo yum clean all && sudo yum makecache",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在执行yum makecache"
+    }
+  ],
+  "removeYUMStorageCMDList": [
+    {
+      "cmdContent": "echo 卸载createrepo和vsftp工具-清理rpm包",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在卸载createrepo和vsftpd工具"
+    }
+  ],
+  "removeRepoCMDList": [
+    {
+      "cmdContent": "echo 清理repo文件-yumcleanall",
+      "errorTags": [
+      ],
+      "successTags":[
+      ],
+      "tips": "正在清理yum源"
+    }
+  ]
+}
