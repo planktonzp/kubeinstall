@@ -447,6 +447,8 @@ func (p *InstallPlan) createStandaloneMaster(sessionID int) error {
 	}
 
 	//根据已经安装的etcd生成config.yaml 用于kubeadm init --config
+	logdebug.Println(logdebug.LevelInfo, currentClusterStatus.Etcd)
+	logdebug.Println(logdebug.LevelInfo, currentClusterStatus.DockerRegistryURL)
 	configYamlFile, err := p.createConfigYaml()
 	if err != nil {
 		context.ErrMsg = err.Error()

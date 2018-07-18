@@ -71,10 +71,13 @@ func (p *InstallPlan) checkDocker() (msg.ErrorCode, string) {
 		return msg.DockerRegistryNotSpecified, "docker仓库配置不能为空"
 	}
 
-	if p.DockerCfg.BaseImagesPath == "" && p.DockerCfg.RegistryTarPath == "" {
-		return msg.DockerRegistryPathNotSpecified, "docker镜像目录不能为空"
-	} else {
-		config.CreateModuleDir(p.DockerCfg.BaseImagesPath)
+	if p.DockerCfg.BaseImagesPath == "" {
+		p.DockerCfg.BaseImagesPath = targetPath
+		config.CreateModuleDir(p.DockerCfg.BaseImagesPath) //2018.5.24  创建docker基础镜像包和仓库镜像包目录
+	}
+
+
+	if p.DockerCfg.RegistryTarPath == "" {
 		config.CreateModuleDir(p.DockerCfg.RegistryTarPath) //2018.5.24  创建docker基础镜像包和仓库镜像包目录
 	}
 

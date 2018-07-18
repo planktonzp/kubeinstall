@@ -520,6 +520,14 @@ func (p *InstallPlan) NodesJoinEX(sessionID int) error {
 		return err
 	}
 
+	//60%
+	//docker-storage配置应用
+	err = p.selectDockerStorage(sessionID)
+	if err != nil {
+		logdebug.Println(logdebug.LevelError, "-----docker存储配置异常-----", err.Error())
+
+		return err
+	}
 	//75%
 	//选择存储类型......
 	err = p.NodesCfg.applyDockerRegistry(sessionID)
